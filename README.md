@@ -1,70 +1,72 @@
-Here’s a draft README.md tailored for integrating the open_vehicle_db module into OEM.autos, reflecting its role as a vehicle selection service powering Year → Make → Model → Style logic across your stack:
+# 🧠 OEM.autos Vehicle DB Module
 
-⸻
+This module provides a unified vehicle hierarchy interface (Year → Make → Model → Style) to power part lookup, fitment validation, and FOE (Factory Original Equipment) structuring across the `OEM.autos` ecosystem.
 
-🧠 OEM.autos Vehicle DB Module
+It integrates with the `open_vehicle_db` dataset, which includes:
 
-This module provides a unified vehicle hierarchy interface (Year → Make → Model → Style) to power part lookup, fitment validation, and FOE (Factory Original Equipment) structuring across the OEM.autos ecosystem.
+- ✅ 69 makes (e.g., `Toyota`, `Ford`)
+- ✅ 1,678 models (e.g., `Prius V`, `F-150`)
+- ✅ 9,730 styles (e.g., `PRIUS V 5DR HATCHBACK`)
+- ✅ Coverage from 1981 through 2026  
+- 📅 Last updated: February 21, 2025
 
-It integrates with the open_vehicle_db dataset, which includes:
-	•	✅ 69 makes (e.g., Toyota, Ford)
-	•	✅ 1,678 models (e.g., Prius V, F-150)
-	•	✅ 9,730 styles (e.g., PRIUS V 5DR HATCHBACK)
-	•	✅ Coverage from 1981 through 2026 (Last updated: Feb 21, 2025)
+---
 
-⸻
+## 🚀 What This Powers
 
-🚀 What This Powers
-	•	🔎 Search filters on part scrapers
-	•	📦 FOE JSON schema (vehicle context for part listings)
-	•	🧩 VIN / VDS resolution (planned)
-	•	🌐 Frontend dropdown selectors (vehicle pickers)
+- 🔎 Search filters on part scrapers
+- 📦 FOE JSON schema (vehicle context for part listings)
+- 🧩 VIN / VDS resolution (planned)
+- 🌐 Frontend dropdown selectors (vehicle pickers)
 
-⸻
+---
 
-📦 Installation
+## 📦 Installation
 
-Clone the forked repo and install in editable mode:
-
+```bash
 git clone https://github.com/your-username/open_vehicle_db.git
 cd open_vehicle_db
 pip install -e .
+```
 
-Or embed directly in your oem.autos/modules/ folder.
+Alternatively, copy the module directly into `oem.autos/modules/` if preferred for tight integration.
 
-⸻
+---
 
-🧩 Usage (Python)
+## 🧩 Usage
 
+```python
 from oem.autos.api import vehicle_db
 
 # List all supported years
-vehicle_db.get_years_supported()
+years = vehicle_db.get_years_supported()
 
-# Get makes for a year
-vehicle_db.get_makes(2003)
+# Get makes for a specific year
+makes = vehicle_db.get_makes(2003)
 
-# Get models for a specific make and year
-vehicle_db.get_models(2003, "Mazda")
+# Get models for a year/make combo
+models = vehicle_db.get_models(2003, "Mazda")
 
-# Get all available styles for a vehicle
-vehicle_db.get_styles(2003, "Mazda", "Protege")
+# Get styles for a year/make/model
+styles = vehicle_db.get_styles(2003, "Mazda", "Protege")
+```
 
+---
 
-⸻
+## 🛠 FastAPI Routes
 
-🛠 API Routes (if using FastAPI)
-
+```http
 GET /api/vehicle/years
 GET /api/vehicle/makes?year=2003
 GET /api/vehicle/models?year=2003&make=Mazda
 GET /api/vehicle/styles?year=2003&make=Mazda&model=Protege
+```
 
+---
 
-⸻
+## 🧱 Example Output (FOE Schema)
 
-🧱 Example Output (Used in FOE)
-
+```json
 {
   "vehicle": {
     "year": 2003,
@@ -81,34 +83,33 @@ GET /api/vehicle/styles?year=2003&make=Mazda&model=Protege
     }
   ]
 }
+```
 
+---
 
-⸻
+## 🧠 Future Plans
 
-🧠 Future Plans
-	•	🔗 VDS-based prefill and VIN decoding
-	•	🧠 Fuzzy matching for style validation during scraping
-	•	💾 SQLite pre-cache for offline + fast local queries
-	•	🌍 International vehicle DB merging (EU, JDM, LHD/RHD)
+- 🔗 VDS-based prefill and VIN decoding
+- 🧠 Fuzzy matching for style validation during scraping
+- 💾 SQLite pre-cache for offline + fast local queries
+- 🌍 Merge with EU/JDM/global vehicle schemas (support LHD/RHD)
+- 📦 Graph traversal to identify compatible siblings / trims
 
-⸻
+---
 
-🧑‍💻 Repo Structure
+## 📁 Repo Structure
 
+```text
 oem.autos/
 ├── api/
-│   └── vehicle_db.py        ← Adapter layer
+│   └── vehicle_db.py         # Adapter layer (vehicle → FOE logic)
 ├── modules/
-│   └── open_vehicle_db/     ← Forked or vendorized dataset
+│   └── open_vehicle_db/      # Forked or vendorized source dataset
 └── ...
+```
 
+---
 
-⸻
+## 📜 License
 
-📜 License
-
-MIT — Same as open_vehicle_db
-
-⸻
-
-Would you like me to also generate a docs/ folder with OpenAPI schema or UI mockup for the dropdown selector?
+MIT — Same license as `open_vehicle_db`
